@@ -7,10 +7,12 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "node server",
-    "start": "node server"
+    "dev": "nodemon ./bin/server",
+    "start": "node ./bin/server"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^1.18.4"
+  },
   "dependencies": {
     "ejs": "^2.6.1",
     "express": "^4.16.3",
