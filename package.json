@@ -1,0 +1,19 @@
+{
+  "name": "node-server-test",
+  "version": "1.0.0",
+  "description": "test",
+  "main": "server.js",
+  "author": "Ricardo Fredes",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "node server",
+    "start": "node server"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "^4.16.3",
+    "express-ejs-layouts": "^2.5.0"
+  }
+}
