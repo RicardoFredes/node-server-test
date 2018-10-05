@@ -1,5 +1,19 @@
 <%- contentFor('body') %>
 <% data.forEach(post => { %>
-	<h1><%= post.title %></h1>
-	<p><%= post.content %></p>
+  <% const img = post.image.medium %>
+  <div class="item">
+    <a href="/category/<%= post.slug %>">
+      <img 
+        src="<%= img.src %>" 
+        alt="<%= post.image.alt %>"
+        width="<%= img.width %>"
+        height="<%= img.height %>"
+      />
+    </a>
+    <h1><%- post.title %></h1>
+    <p><%- post.content %></p>
+    <a href="/category/<%= post.slug %>">
+      Ler mais...
+    </a>
+  </div>
 <% }) %>
