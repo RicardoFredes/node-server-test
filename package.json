@@ -8,7 +8,8 @@
   "private": true,
   "scripts": {
     "dev": "nodemon ./bin/server",
-    "start": "node ./bin/server"
+    "start": "node ./bin/server",
+    "stylus": "stylus -o public/css/style.css stylus/index.styl -w"
   },
   "devDependencies": {
     "nodemon": "^1.18.4"

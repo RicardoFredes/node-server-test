@@ -1,19 +1,34 @@
 <%- contentFor('body') %>
-<% data.forEach(post => { %>
-  <% const img = post.image.medium %>
-  <div class="item">
-    <a href="/category/<%= post.slug %>">
-      <img 
-        src="<%= img.src %>" 
-        alt="<%= post.image.alt %>"
-        width="<%= img.width %>"
-        height="<%= img.height %>"
-      />
-    </a>
-    <h1><%- post.title %></h1>
-    <p><%- post.content %></p>
-    <a href="/category/<%= post.slug %>">
-      Ler mais...
-    </a>
-  </div>
-<% }) %>
+<div class="Body">
+  <main class="Container">
+    <div class="Posts">
+    <% data.forEach(post => { %>
+      <% const img = post.image.medium %>
+      <article class="PostItem P24">
+        <a class="PostItemImage" href="/category/<%= post.slug %>">
+          <img 
+            src="<%= img.src %>" 
+            alt="<%= post.image.alt %>"
+            width="<%= img.width %>"
+            height="<%= img.height %>"
+          />
+        </a>
+        <div class="PostItemInfo TextLight MT16">
+          Por Author tal | Categoria X
+        </div>
+        <a class="PostItemTitle" href="/category/<%= post.slug %>">
+          <h1>
+            <%- post.title %>
+          </h1>
+        </a>
+        <div class="PostItemContent TextLight">
+          <%- post.content %>
+        </div>
+        <div class="PostItemDate TextLight MT16">
+          <%= post.date %>
+        </div>
+      </article>
+    <% }) %>
+    </div>
+  </main>
+</div>
