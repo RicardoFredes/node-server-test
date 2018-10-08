@@ -1,9 +1,10 @@
 const rp = require('request-promise')
-const {exists, readFile, writeFile, writeJsonFile} = require('../services/fileSystem')
+const {exists, readFile, writeJsonFile} = require('../services/fileSystem')
+const {parsePosts, parseImageSize} = require('../services/postsBlogParsers')
 
 const tempFile = '_temp/wp-json_wp_v2_posts.cache'
 
-const rpPosts = () => 
+const getBlogPosts = () => 
   getCachedPosts(tempFile)
     .catch(getPostsFromApi)
     .catch(error => console.log(error))
@@ -15,52 +16,32 @@ const getCachedPosts = path =>
 
 const getPostsFromApi = () => 
   rp({ uri: 'https://blog.mesalva.com/wp-json/wp/v2/posts', json: true})
-    .then(data => Promise.all(parseDataAndGetImages(data)))
+    .then(data => parsePosts(data))
+    .then(data => Promise.all(getImages(data)))
+    //.then(data => Promise.all(getAuthor(data)))
     .then(data => {
       writeJsonFile(tempFile, data)
       return data
     })
 
-const parseDataAndGetImages = data => 
-  data.map(postItem => 
-    rpImage(postItem._links['wp:featuredmedia'][0].href)
-      .then(image => 
-        ({
-          title: postItem.title.rendered,
-          content: postItem.excerpt.rendered,
-          date: parseDate(postItem.date),
-          slug: postItem.slug,
-          image,
-        })
-      )
-    )
+const getImages = data => 
+  data.map(({_imageUri, ...props}) => getImageFromApi(_imageUri, props))
 
-const rpImage = uri => 
-  rp({ uri, json: true })
-    .then(image => 
-      ({
-        alt: image.alt_txt,
-        default: {
-          src: image.source_url,
-          height: image.media_type.height,
-          width: image.media_type.width,
-        },
-        medium: parseImageSize(image.media_details.sizes.medium),
-      })
-    )
-    .catch(error => console.log(error))
+const getImageFromApi = (uri, props) => rp({ uri, json: true })
+  .then(image => (
+   {
+    ...props,
+    image: {
+      alt: image.alt_txt,
+      default: {
+        src: image.source_url,
+        height: image.media_type.height,
+        width: image.media_type.width,
+      },
+      medium: parseImageSize(image.media_details.sizes.medium),
+    }
+   } 
+  ))
+  .catch(error => console.log(error))
 
-const parseImageSize = image => ({
-  src: image.source_url,
-  height: image.height,
-  width: image.width,
-})
-
-const mounth = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
-
-const parseDate = date => {
-  const d = date.split('T')[0].split('-')
-  return `${d[2]} de ${mounth[Math.round(d[1]) - 1]} de ${d[0]}`
-}
-
-module.exports = rpPosts
+module.exports = getBlogPosts
