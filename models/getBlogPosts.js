@@ -25,7 +25,21 @@ const getPostsFromApi = () =>
     })
 
 const getImages = data => 
-  data.map(({_imageUri, ...props}) => getImageFromApi(_imageUri, props))
+  data.map(({_imageUri, ...props}) => rp({ uri, json: true })
+  .then(image => (
+   {
+    ...props,
+    image: {
+      alt: image.alt_txt,
+      default: {
+        src: image.source_url,
+        height: image.media_type.height,
+        width: image.media_type.width,
+      },
+      medium: parseImageSize(image.media_details.sizes.medium),
+    }
+   } 
+  )))
 
 const getImageFromApi = (uri, props) => rp({ uri, json: true })
   .then(image => (
